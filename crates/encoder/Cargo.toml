@@ -1,0 +1,9 @@
+[package]
+name    = "terangacast-encoder"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+openh264  = "0.6"
+thiserror = { workspace = true }
+tracing   = { workspace = true }

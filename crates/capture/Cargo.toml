@@ -1,0 +1,15 @@
+[package]
+name    = "terangacast-capture"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+thiserror = { workspace = true }
+tokio     = { workspace = true }
+tracing   = { workspace = true }
+
+[target.'cfg(target_os = "windows")'.dependencies]
+scap = "0.1.0-beta.1"
+
+[dev-dependencies]
+tokio = { workspace = true, features = ["rt", "macros"] }
