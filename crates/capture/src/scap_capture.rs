@@ -1,5 +1,5 @@
 use scap::capturer::{Capturer, Options, Resolution};
-use scap::frame::{Frame, FrameType};
+use scap::frame::{Frame, FrameType, VideoFrame};
 use crate::{CaptureError, RawFrame, ScreenCapture};
 
 pub struct ScapCapture {
@@ -24,11 +24,10 @@ impl ScapCapture {
             excluded_targets: None,
             output_type: FrameType::BGRAFrame,
             output_resolution: Resolution::Captured,
-            source_rect: None,
             ..Default::default()
         };
 
-        let capturer = Capturer::build(options)
+        let mut capturer = Capturer::build(options)
             .map_err(|e| CaptureError::Init(e.to_string()))?;
 
         let [width, height] = capturer.get_output_frame_size();
@@ -45,10 +44,10 @@ impl ScreenCapture for ScapCapture {
 
     fn next_frame(&mut self) -> Result<RawFrame, CaptureError> {
         match self.capturer.get_next_frame() {
-            Ok(Frame::BGRA(f)) => Ok(RawFrame {
+            Ok(Frame::Video(VideoFrame::BGRA(f))) => Ok(RawFrame {
                 data: f.data,
-                width: f.width,
-                height: f.height,
+                width: f.width as u32,
+                height: f.height as u32,
             }),
             Ok(_) => Err(CaptureError::Frame("Format de frame inattendu".into())),
             Err(e) => Err(CaptureError::Frame(e.to_string())),

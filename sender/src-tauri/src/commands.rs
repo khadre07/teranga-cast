@@ -48,7 +48,7 @@ pub async fn start_stream(
 
     #[cfg(not(target_os = "windows"))]
     let capture: Box<dyn terangacast_capture::ScreenCapture> = {
-        return Err("La capture d'écran nécessite Windows".into());
+        return Err("La capture d'écran nécessite macOS 13+ ou Windows. Votre version de macOS n'est pas supportée par scap.".into());
     };
 
     let encoder = Box::new(
@@ -74,6 +74,6 @@ pub async fn stop_stream(state: State<'_, AppState>) -> Result<(), String> {
 }
 
 #[tauri::command]
-pub async fn get_status(state: State<'_, AppState>) -> bool {
-    state.stream.lock().await.is_some()
+pub async fn get_status(state: State<'_, AppState>) -> Result<bool, String> {
+    Ok(state.stream.lock().await.is_some())
 }
